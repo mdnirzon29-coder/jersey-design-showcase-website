@@ -42,9 +42,12 @@ export const seedCategories: Category[] = [
 
 function makeImages(basePath: string, altBase: string) {
   const types: JerseyImageType[] = ["front", "back", "collar", "sleeve", "swing"];
+  const assetUrl = basePath.startsWith("/")
+    ? `${import.meta.env.BASE_URL}${basePath.slice(1)}`
+    : basePath;
   return types.map((type, index) => ({
     id: `${basePath}-${type}`,
-    url: basePath,
+    url: assetUrl,
     type,
     alt: `${altBase} — ${type} view`,
     order: index,
