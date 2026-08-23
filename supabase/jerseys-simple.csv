@@ -1,0 +1,10 @@
+id,name,slug,category_id,description,images
+jersey-cricket-1,Royal Strike Cricket Jersey,royal-strike-cricket-jersey,cat-cricket,Bold blue and gold cricket design built for winning teams.,[{"url":"/images/jerseys/cricket-1.jpg"}]
+jersey-cricket-2,Blaze Cricket Jersey,blaze-cricket-jersey,cat-cricket,Sharp red and black cricket design with an aggressive edge.,[{"url":"/images/jerseys/cricket-2.jpg"}]
+jersey-cricket-3,Champion Cricket Jersey,champion-cricket-jersey,cat-cricket,Vibrant blue and red cricket design with clean white accents.,[{"url":"/images/jerseys/cricket-3.jpg"}]
+jersey-football-1,Thunder Strike FC Jersey,thunder-strike-fc-jersey,cat-football,Classic red and white striped football club design.,[{"url":"/images/jerseys/football-1.jpg"}]
+jersey-football-2,Victory Blue FC Jersey,victory-blue-fc-jersey,cat-football,Sharp blue and white sash football design for standout teams.,[{"url":"/images/jerseys/football-2.jpg"}]
+jersey-football-3,Phoenix FC Jersey,phoenix-fc-jersey,cat-football,Bold black football design with fierce red lightning graphics.,[{"url":"/images/jerseys/football-3.jpg"}]
+jersey-badminton-1,Ace Badminton Jersey,ace-badminton-jersey,cat-badminton,Lightweight white and blue badminton design for agile play.,[{"url":"/images/jerseys/badminton-1.jpg"}]
+jersey-badminton-2,Smash Pro Badminton Jersey,smash-pro-badminton-jersey,cat-badminton,Bold red badminton design for a confident court presence.,[{"url":"/images/jerseys/badminton-2.jpg"}]
+jersey-badminton-3,Rally Badminton Jersey,rally-badminton-jersey,cat-badminton,Geometric blue and red badminton design with professional styling.,[{"url":"/images/jerseys/badminton-3.jpg"}]
