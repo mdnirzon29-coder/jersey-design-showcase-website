@@ -25,16 +25,13 @@ export default function Header() {
     <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-red-600 via-blue-800 to-blue-900 text-lg font-black text-white shadow-sm">
-            AR
-          </span>
-          <span className="flex flex-col leading-tight">
-            <span className="text-base font-extrabold tracking-tight text-neutral-900 sm:text-lg">
-              {siteConfig.brandName}
-            </span>
-            <span className="hidden text-[11px] font-medium uppercase tracking-widest text-neutral-500 sm:block">
-              Jersey Design Showcase
-            </span>
+          <img
+            src={`${import.meta.env.BASE_URL}images/brand/ar-logo.png`}
+            alt={`${siteConfig.brandName} logo`}
+            className="h-10 w-12 object-contain"
+          />
+          <span className="text-base font-extrabold tracking-tight text-neutral-900 sm:text-lg">
+            {siteConfig.brandName}
           </span>
         </Link>
 

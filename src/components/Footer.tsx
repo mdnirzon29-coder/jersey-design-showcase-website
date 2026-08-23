@@ -7,9 +7,11 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-red-600 via-blue-700 to-blue-900 text-lg font-black text-white">
-              AR
-            </span>
+            <img
+              src={`${import.meta.env.BASE_URL}images/brand/ar-logo.png`}
+              alt={`${siteConfig.brandName} logo`}
+              className="h-10 w-12 object-contain"
+            />
             <span className="text-lg font-extrabold text-white">{siteConfig.brandName}</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-neutral-400">
@@ -71,7 +73,8 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-neutral-800 py-5 text-center text-xs text-neutral-500">
-        © 2026 {siteConfig.brandName}. All Rights Reserved.
+        <p>© 2026 {siteConfig.brandName}. All Rights Reserved.</p>
+        <p className="mt-1">Design and Designed &amp; Developed by Toufique Islam</p>
       </div>
     </footer>
   );
