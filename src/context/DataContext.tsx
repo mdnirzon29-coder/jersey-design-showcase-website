@@ -25,6 +25,11 @@ type JerseyRow = {
 
 const IMAGE_TYPES: JerseyImageType[] = ["front", "back", "collar", "sleeve", "swing", "other"];
 
+function resolveImageUrl(url: string) {
+  if (!url.startsWith("/")) return url;
+  return `${import.meta.env.BASE_URL}${url.slice(1)}`;
+}
+
 function normalizeImages(value: unknown, jerseyId: string, jerseyName: string): JerseyImage[] {
   if (!Array.isArray(value)) return [];
 
@@ -38,7 +43,7 @@ function normalizeImages(value: unknown, jerseyId: string, jerseyName: string): 
     return [
       {
         id: typeof candidate.id === "string" ? candidate.id : `${jerseyId}-image-${index + 1}`,
-        url: candidate.url,
+        url: resolveImageUrl(candidate.url),
         type,
         alt: typeof candidate.alt === "string" ? candidate.alt : `${jerseyName} image ${index + 1}`,
         order: typeof candidate.order === "number" ? candidate.order : index,
