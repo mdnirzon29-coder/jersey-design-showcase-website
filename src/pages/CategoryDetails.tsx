@@ -23,7 +23,7 @@ export default function CategoryDetails() {
 
   return (
     <div>
-      <div className="relative h-56 w-full overflow-hidden sm:h-72">
+      <div className="relative h-64 w-full overflow-hidden sm:h-72">
         <img src={category.image} alt={category.name} className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
@@ -37,7 +37,7 @@ export default function CategoryDetails() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <div className="mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-14 lg:px-8">
         <div className="mb-8 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-800 hover:text-red-600">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
@@ -51,7 +51,7 @@ export default function CategoryDetails() {
         </div>
 
         {jerseys.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
             {jerseys.map((jersey) => (
               <JerseyCard key={jersey.id} jersey={jersey} />
             ))}

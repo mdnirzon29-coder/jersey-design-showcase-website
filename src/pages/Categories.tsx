@@ -6,7 +6,7 @@ export default function Categories() {
   const { categories } = useData();
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+    <div className="mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-14 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
         <span className="text-xs font-bold uppercase tracking-[0.35em] text-red-600">
           AR Entertainment
@@ -19,7 +19,7 @@ export default function Categories() {
         </p>
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-14 sm:gap-8 lg:grid-cols-3">
         {categories.map((category) => (
           <CategoryCard key={category.id} category={category} />
         ))}
