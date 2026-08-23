@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/jersey-design-showcase-website/",
   plugins: [react(), tailwindcss(), viteSingleFile()],
   server: {
     allowedHosts: true,
