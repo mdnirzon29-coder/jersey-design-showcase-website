@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useData } from "../../context/DataContext";
 import type { Category } from "../../types";
+import { uploadImage } from "../../lib/cloudinary";
 
 interface FormState {
   id?: string;
@@ -16,6 +17,10 @@ export default function AdminCategories() {
   const [form, setForm] = useState<FormState>(emptyForm);
   const [showForm, setShowForm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
+  const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function openNew() {
@@ -33,28 +38,46 @@ export default function AdminCategories() {
     setShowForm(true);
   }
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setForm((f) => ({ ...f, image: reader.result as string }));
-    reader.readAsDataURL(file);
+    setError("");
+    setUploading(true);
+    try {
+      const image = await uploadImage(file);
+      setForm((current) => ({ ...current, image }));
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Image upload failed.");
+    } finally {
+      setUploading(false);
+    }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name.trim() || !form.image) return;
-    if (form.id) {
-      updateCategory(form.id, {
-        name: form.name,
-        description: form.description,
-        image: form.image,
-      });
-    } else {
-      addCategory({ name: form.name, description: form.description, image: form.image });
+    setError("");
+    if (!form.name.trim() || !form.image) {
+      setError("Category name and image are required.");
+      return;
     }
-    setShowForm(false);
-    setForm(emptyForm);
+    setSaving(true);
+    try {
+      if (form.id) {
+        await updateCategory(form.id, {
+          name: form.name,
+          description: form.description,
+          image: form.image,
+        });
+      } else {
+        await addCategory({ name: form.name, description: form.description, image: form.image });
+      }
+      setShowForm(false);
+      setForm(emptyForm);
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Could not save this category.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -137,7 +160,7 @@ export default function AdminCategories() {
                 {form.image && (
                   <img src={form.image} alt="Preview" className="mb-2 h-32 w-full rounded-lg object-cover" />
                 )}
-                <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="text-sm" />
+                <input ref={fileRef} type="file" accept="image/*" onChange={(e) => void handleFile(e)} disabled={uploading} className="text-sm disabled:opacity-50" />
                 <input
                   value={form.image.startsWith("data:") ? "" : form.image}
                   onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
@@ -145,6 +168,7 @@ export default function AdminCategories() {
                   className="mt-2 w-full rounded-lg border border-neutral-300 px-4 py-2 text-sm outline-none focus:border-blue-700"
                 />
               </div>
+              {error && <p className="text-sm font-medium text-red-600">{error}</p>}
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
@@ -157,7 +181,7 @@ export default function AdminCategories() {
                   type="submit"
                   className="flex-1 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-900"
                 >
-                  Save Category
+                  {saving ? "Saving…" : "Save Category"}
                 </button>
               </div>
             </form>
@@ -176,18 +200,28 @@ export default function AdminCategories() {
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-200"
+                disabled={deleting}
+                className="flex-1 rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  deleteCategory(deleteTarget.id);
-                  setDeleteTarget(null);
+                disabled={deleting}
+                onClick={async () => {
+                  setError("");
+                  setDeleting(true);
+                  try {
+                    await deleteCategory(deleteTarget.id);
+                    setDeleteTarget(null);
+                  } catch (deleteError) {
+                    setError(deleteError instanceof Error ? deleteError.message : "Could not delete this category.");
+                  } finally {
+                    setDeleting(false);
+                  }
                 }}
-                className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:brightness-105"
+                className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Delete
+                {deleting ? "Deleting…" : "Delete"}
               </button>
             </div>
           </div>

@@ -35,9 +35,8 @@ export default function AdminDashboard() {
       </div>
 
       <div className="mt-10 rounded-2xl border border-dashed border-neutral-300 p-6 text-sm text-neutral-500">
-        This is a frontend demo admin panel. Categories and jerseys are saved to your browser's
-        local storage. Connect a real backend (see project README notes) for multi-user,
-        server-side persistence.
+        Live admin mode is enabled. Changes are stored in Supabase and synchronized across devices;
+        new images use Cloudinary's unsigned free-tier upload endpoint.
       </div>
     </div>
   );

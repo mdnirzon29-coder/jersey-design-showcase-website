@@ -7,6 +7,8 @@ export default function AdminJerseys() {
   const { jerseys, categories, deleteJersey } = useData();
   const [filter, setFilter] = useState("all");
   const [deleteTarget, setDeleteTarget] = useState<Jersey | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState("");
 
   const filtered = filter === "all" ? jerseys : jerseys.filter((j) => j.categoryId === filter);
 
@@ -87,6 +89,8 @@ export default function AdminJerseys() {
         <p className="mt-8 text-center text-sm text-neutral-500">No jerseys found in this category.</p>
       )}
 
+      {error && <p className="mt-5 text-sm font-medium text-red-600">{error}</p>}
+
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl">
@@ -97,18 +101,28 @@ export default function AdminJerseys() {
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-200"
+                disabled={deleting}
+                className="flex-1 rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  deleteJersey(deleteTarget.id);
-                  setDeleteTarget(null);
+                disabled={deleting}
+                onClick={async () => {
+                  setError("");
+                  setDeleting(true);
+                  try {
+                    await deleteJersey(deleteTarget.id);
+                    setDeleteTarget(null);
+                  } catch (deleteError) {
+                    setError(deleteError instanceof Error ? deleteError.message : "Could not delete this jersey.");
+                  } finally {
+                    setDeleting(false);
+                  }
                 }}
-                className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:brightness-105"
+                className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Delete
+                {deleting ? "Deleting…" : "Delete"}
               </button>
             </div>
           </div>

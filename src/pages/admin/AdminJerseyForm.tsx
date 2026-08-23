@@ -4,6 +4,7 @@ import { useData } from "../../context/DataContext";
 import type { JerseyImage, JerseyImageType } from "../../types";
 import { IMAGE_TYPE_LABELS, IMAGE_TYPE_ORDER } from "../../types";
 import { uid } from "../../utils/slug";
+import { uploadImage } from "../../lib/cloudinary";
 
 export default function AdminJerseyForm() {
   const { id } = useParams();
@@ -18,6 +19,8 @@ export default function AdminJerseyForm() {
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<JerseyImage[]>([]);
   const [error, setError] = useState("");
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (existing) {
@@ -56,26 +59,39 @@ export default function AdminJerseyForm() {
     });
   }
 
-  function handleFileUpload(imgId: string, file: File) {
-    const reader = new FileReader();
-    reader.onload = () => updateImage(imgId, { url: reader.result as string });
-    reader.readAsDataURL(file);
+  async function handleFileUpload(imgId: string, file: File) {
+    setError("");
+    setUploadingId(imgId);
+    try {
+      const url = await uploadImage(file);
+      updateImage(imgId, { url });
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Image upload failed.");
+    } finally {
+      setUploadingId(null);
+    }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     if (!name.trim()) return setError("Jersey name is required.");
     if (!categoryId) return setError("Please select a category.");
     const validImages = images.filter((img) => img.url);
     if (validImages.length === 0) return setError("Add at least one image.");
-
-    if (isEdit && existing) {
-      updateJersey(existing.id, { name, categoryId, description, images: validImages });
-    } else {
-      addJersey({ name, categoryId, description, images: validImages });
+    setSaving(true);
+    try {
+      if (isEdit && existing) {
+        await updateJersey(existing.id, { name, categoryId, description, images: validImages });
+      } else {
+        await addJersey({ name, categoryId, description, images: validImages });
+      }
+      navigate("/admin/jerseys");
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Could not save this jersey.");
+    } finally {
+      setSaving(false);
     }
-    navigate("/admin/jerseys");
   }
 
   if (isEdit && !existing) {
@@ -180,8 +196,9 @@ export default function AdminJerseyForm() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => e.target.files?.[0] && handleFileUpload(img.id, e.target.files[0])}
-                      className="text-xs"
+                      onChange={(e) => e.target.files?.[0] && void handleFileUpload(img.id, e.target.files[0])}
+                      disabled={uploadingId === img.id}
+                      className="text-xs disabled:opacity-50"
                     />
                   </div>
                   <input
@@ -237,7 +254,7 @@ export default function AdminJerseyForm() {
             type="submit"
             className="flex-1 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-900"
           >
-            {isEdit ? "Save Changes" : "Add Jersey"}
+            {saving ? "Saving…" : isEdit ? "Save Changes" : "Add Jersey"}
           </button>
         </div>
       </form>
