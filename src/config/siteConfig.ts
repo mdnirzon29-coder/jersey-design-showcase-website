@@ -24,11 +24,11 @@ export const siteConfig: SiteConfig = {
   tagline: "Premium Jersey Design Showcase",
   description:
     "AR Entertainment specializes in custom sports jersey design — cricket, football, badminton and more. Explore our design catalog and get in touch to bring your team's jersey to life.",
-  whatsappNumber: "919999999999",
-  facebookUrl: "https://facebook.com/arentertainment",
-  phone: "+91 99999 99999",
-  email: "info@arentertainment.com",
-  address: "Design Studio, Sports Avenue, India",
+  whatsappNumber: "8801712555715",
+  facebookUrl: "https://www.facebook.com/share/1ByiZNceLK/",
+  phone: "01712555715",
+  email: "arentertainment.syl.bd@gmail.com",
+  address: "Westend Market (Shop No. 5/6) Fenchuganj Road, Kodomtoli, Sylhet",
   defaultWhatsappMessage: "Hello AR Entertainment, I am interested in your jersey designs.",
 };
 
@@ -36,12 +36,8 @@ export const siteConfig: SiteConfig = {
  * Build a WhatsApp deep link with an optional jersey name inserted into the
  * pre-filled message.
  */
-export function getWhatsAppLink(jerseyName?: string): string {
-  const message = jerseyName
-    ? `Hello AR Entertainment, I am interested in the ${jerseyName} design.`
-    : siteConfig.defaultWhatsappMessage;
-  const encoded = encodeURIComponent(message);
-  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encoded}`;
+export function getWhatsAppLink(_jerseyName?: string): string {
+  return `https://wa.me/${siteConfig.whatsappNumber}`;
 }
 
 export function getFacebookLink(): string {
