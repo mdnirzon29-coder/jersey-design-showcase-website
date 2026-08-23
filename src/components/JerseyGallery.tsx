@@ -102,7 +102,7 @@ export default function JerseyGallery({
               className="group relative block w-full overflow-hidden rounded-2xl bg-neutral-100 shadow-xl ring-1 ring-black/5"
               aria-label={`Open ${IMAGE_TYPE_LABELS[image.type]} fullscreen`}
             >
-              <div className="aspect-[4/5] w-full overflow-hidden sm:aspect-[16/10]">
+              <div className="aspect-[16/10] w-full overflow-hidden">
                 <img
                   src={image.url}
                   alt={image.alt}
@@ -169,7 +169,7 @@ export default function JerseyGallery({
                 setLightboxIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length))
               }
               aria-label="Previous image"
-              className="absolute left-2 z-10 hidden h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/25 sm:flex sm:left-4"
+              className="absolute left-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/25 sm:left-4 sm:h-11 sm:w-11"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-6 w-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" />
@@ -186,7 +186,7 @@ export default function JerseyGallery({
             <button
               onClick={() => setLightboxIndex((i) => (i === null ? null : (i + 1) % images.length))}
               aria-label="Next image"
-              className="absolute right-2 z-10 hidden h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/25 sm:flex sm:right-4"
+              className="absolute right-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/25 sm:right-4 sm:h-11 sm:w-11"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-6 w-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" />
