@@ -2,34 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import type { JerseyImage } from "../types";
 import { IMAGE_TYPE_LABELS } from "../types";
 
-interface CropStyle {
-  objectPosition: string;
-  transform: string;
-}
-
-// Demo placeholder jerseys reuse one photo per design. To make each labelled
-// section feel distinct until real per-angle photography is uploaded by the
-// admin, we frame a different region of the same image for each image type.
-// Once an admin uploads a real, dedicated photo for a given type, that image
-// is shown as-is (no crop is applied) because its `url` will differ from the
-// jersey's shared placeholder image.
-const CROPS: Record<string, CropStyle> = {
-  front: { objectPosition: "50% 42%", transform: "scale(1)" },
-  back: { objectPosition: "50% 42%", transform: "scale(1) scaleX(-1)" },
-  collar: { objectPosition: "50% 6%", transform: "scale(2.4)" },
-  sleeve: { objectPosition: "8% 38%", transform: "scale(2.1)" },
-  swing: { objectPosition: "50% 78%", transform: "scale(2.6)" },
-  other: { objectPosition: "50% 50%", transform: "scale(1)" },
-};
-
-function getCropStyle(image: JerseyImage, sameUrlCount: number): React.CSSProperties {
-  // Only apply the simulated crop when multiple images share the same URL
-  // (i.e. this is placeholder data). Unique uploaded images render normally.
-  if (sameUrlCount <= 1) return { objectPosition: "50% 50%" };
-  const crop = CROPS[image.type] ?? CROPS.other;
-  return { objectPosition: crop.objectPosition, transform: crop.transform };
-}
-
 export default function JerseyGallery({
   images,
   jerseyName,
@@ -39,11 +11,6 @@ export default function JerseyGallery({
 }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
-
-  const urlCounts = images.reduce<Record<string, number>>((acc, img) => {
-    acc[img.url] = (acc[img.url] ?? 0) + 1;
-    return acc;
-  }, {});
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -102,13 +69,12 @@ export default function JerseyGallery({
               className="group relative block w-full overflow-hidden rounded-2xl bg-neutral-100 shadow-xl ring-1 ring-black/5"
               aria-label={`Open ${IMAGE_TYPE_LABELS[image.type]} fullscreen`}
             >
-              <div className="aspect-[16/10] w-full overflow-hidden">
+              <div className="aspect-square w-full overflow-hidden bg-neutral-100">
                 <img
                   src={image.url}
                   alt={image.alt}
                   loading="lazy"
-                  style={getCropStyle(image, urlCounts[image.url])}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                  className="h-full w-full object-contain transition duration-500"
                 />
               </div>
               <span className="pointer-events-none absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-4 py-2 text-xs font-semibold text-white opacity-0 backdrop-blur transition group-hover:opacity-100">
@@ -134,8 +100,7 @@ export default function JerseyGallery({
               <img
                 src={image.url}
                 alt={image.alt}
-                style={getCropStyle(image, urlCounts[image.url])}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain bg-neutral-100"
               />
             </button>
           ))}
@@ -179,7 +144,6 @@ export default function JerseyGallery({
             <img
               src={images[lightboxIndex].url}
               alt={images[lightboxIndex].alt}
-              style={getCropStyle(images[lightboxIndex], urlCounts[images[lightboxIndex].url])}
               className="max-h-full max-w-full rounded-lg object-contain shadow-2xl"
             />
 
