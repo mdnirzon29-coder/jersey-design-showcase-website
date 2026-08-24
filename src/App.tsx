@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
-import { DataProvider } from "./context/DataContext";
+import { DataProvider, useData } from "./context/DataContext";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -20,6 +20,23 @@ import AdminCategories from "./pages/admin/AdminCategories";
 import AdminJerseys from "./pages/admin/AdminJerseys";
 import AdminJerseyForm from "./pages/admin/AdminJerseyForm";
 
+function LiveDataGate({ children }: { children: React.ReactNode }) {
+  const { loading } = useData();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white px-6 text-center">
+        <div>
+          <div className="mx-auto h-10 w-10 animate-pulse rounded-full bg-gradient-to-br from-red-600 via-blue-700 to-blue-900" />
+          <p className="mt-4 text-sm font-medium text-neutral-500">Loading live designs…</p>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
+
 function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -37,12 +54,12 @@ export default function App() {
       <DataProvider>
         <HashRouter>
           <Routes>
-            <Route path="/" element={<SiteLayout><Categories /></SiteLayout>} />
-            <Route path="/category/:slug" element={<SiteLayout><CategoryDetails /></SiteLayout>} />
-            <Route path="/jersey/:slug" element={<SiteLayout><JerseyDetails /></SiteLayout>} />
-            <Route path="/about" element={<SiteLayout><About /></SiteLayout>} />
-            <Route path="/contact" element={<SiteLayout><Contact /></SiteLayout>} />
-            <Route path="/search" element={<SiteLayout><SearchResults /></SiteLayout>} />
+            <Route path="/" element={<LiveDataGate><SiteLayout><Categories /></SiteLayout></LiveDataGate>} />
+            <Route path="/category/:slug" element={<LiveDataGate><SiteLayout><CategoryDetails /></SiteLayout></LiveDataGate>} />
+            <Route path="/jersey/:slug" element={<LiveDataGate><SiteLayout><JerseyDetails /></SiteLayout></LiveDataGate>} />
+            <Route path="/about" element={<LiveDataGate><SiteLayout><About /></SiteLayout></LiveDataGate>} />
+            <Route path="/contact" element={<LiveDataGate><SiteLayout><Contact /></SiteLayout></LiveDataGate>} />
+            <Route path="/search" element={<LiveDataGate><SiteLayout><SearchResults /></SiteLayout></LiveDataGate>} />
 
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
@@ -63,12 +80,14 @@ export default function App() {
             <Route
               path="*"
               element={
-                <SiteLayout>
-                  <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-                    <h1 className="text-3xl font-extrabold text-neutral-900">Page Not Found</h1>
-                    <p className="mt-2 text-neutral-500">The page you're looking for doesn't exist.</p>
-                  </div>
-                </SiteLayout>
+                <LiveDataGate>
+                  <SiteLayout>
+                    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+                      <h1 className="text-3xl font-extrabold text-neutral-900">Page Not Found</h1>
+                      <p className="mt-2 text-neutral-500">The page you're looking for doesn't exist.</p>
+                    </div>
+                  </SiteLayout>
+                </LiveDataGate>
               }
             />
           </Routes>
