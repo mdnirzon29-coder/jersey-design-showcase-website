@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { Category, Jersey, JerseyImage, JerseyImageType } from "../types";
-import { seedCategories, seedJerseys } from "../data/seed";
 import { slugify, uid } from "../utils/slug";
 import { supabase } from "../lib/supabase";
 
@@ -103,8 +102,8 @@ interface DataContextValue {
 const DataContext = createContext<DataContextValue | undefined>(undefined);
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>(seedCategories);
-  const [jerseys, setJerseys] = useState<Jersey[]>(seedJerseys);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [jerseys, setJerseys] = useState<Jersey[]>([]);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
